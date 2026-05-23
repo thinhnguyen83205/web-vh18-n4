@@ -1,5 +1,5 @@
 {
-  "name": "web-vh18-nh4",
+  "name": "btl-vh18-nhom11",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -7,14 +7,22 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^13.5.0",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
+    "axios": "^1.16.1",
+    "bootstrap": "5.3.3",
+    "lucide-react": "^1.16.0",
+    "react": "^19.2.4",
+    "react-bootstrap": "^2.10.10",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.15.1",
     "react-scripts": "5.0.1",
+    "sass": "^1.99.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "server": "npx --yes kill-port 9999 && json-server --watch src/database.json --port 9999",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "eslint:fix": "yarn eslint --fix",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -35,5 +43,14 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@stylistic/eslint-plugin": "^1.8.1",
+    "eslint": "^8.57.1",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-unused-imports": "^4.4.1",
+    "json-server": "^1.0.0-beta.15"
   }
 }
