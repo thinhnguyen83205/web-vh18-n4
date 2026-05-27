@@ -1,5 +1,5 @@
 import "./App.css";
-import MyTicketsPage from "./cart/MyTicketsPage";
+import MyTicketsPage from "./components/cart/disignt-tickets/MyTicketsPage";
 
 function App() {
   return (

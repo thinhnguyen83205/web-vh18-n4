@@ -14,6 +14,49 @@
 .my-tickets-page__card {
   width: 100%;
   max-width: 340px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.my-tickets-page__card .card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.my-tickets-page__card-actions {
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.view-ticket-screen {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+.view-ticket-screen__back {
+  padding-left: 0;
+  margin-bottom: 1rem;
+  text-decoration: none;
+}
+
+.view-ticket-screen__card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.view-ticket-screen__image {
+  height: 220px;
+  object-fit: cover;
+}
+
+.view-ticket-screen__qr {
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px dashed #dee2e6;
 }
 
 .App {
