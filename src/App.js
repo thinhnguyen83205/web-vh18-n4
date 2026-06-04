@@ -1,11 +1,24 @@
 import "./App.css";
-import MyTicketsPage from "./components/cart/disignt-tickets/MyTicketsPage";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import CartPage from "./components/cart/disignt-tickets/MyTicketsPage";
+import PlaneList from "./components/login-page/pages/PlaneList";
+import HotelList from "./components/login-page/pages/HotelList";
+import CarList from "./components/login-page/pages/CarList";
+import TourList from "./components/login-page/pages/TourList";
+import ViewTicketsDetail from "./components/view-tickets-detail/ViewTicketsDetail";
 
 function App() {
   return (
-    <div className="min-vh-100 bg-light py-4">
-      <MyTicketsPage />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<CartPage />} />
+        <Route path="/detail" element={<ViewTicketsDetail />} />
+        <Route path="/plane-list" element={<PlaneList />} />
+        <Route path="/hotel-list" element={<HotelList />} />
+        <Route path="/car-list" element={<CarList />} />
+        <Route path="/tour-list" element={<TourList />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

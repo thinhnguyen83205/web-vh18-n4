@@ -1,28 +1,71 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Row, Col, Card, Button } from "react-bootstrap";
+import axios from "axios";
 import {
   ACTION_SIGNAL,
   TICKET_STATUS,
   applyActionSignal,
   countTicketsByStatus,
   createInitialTickets,
+  createInitialHotels,
+  createInitialCars,
+  consumePendingBooking,
 } from "../navigation-tickets/ticketButtonLogic";
 import ViewTicketScreen from "../view-tickets/ViewTicketScreen";
-import database from "../../../database.json";
 
+// Label cho các tab
 const TAB_LABELS = {
   pending: "Chờ thanh toán",
   paid: "Đã thanh toán",
   cancelled: "Đã hủy",
 };
-
+// state 4 biến react useState để quản lý trạng thái của component
 function MyTicketsPage() {
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState(TICKET_STATUS.PENDING);
-  const [tickets, setTickets] = useState(() =>
-    createInitialTickets(database.flights),
-  );
+  const [tickets, setTickets] = useState([]);
   const [viewingTicket, setViewingTicket] = useState(null);
 
+  useEffect(() => {
+    const newBooking = consumePendingBooking();
+    let cancelled = false;
+    // Lấy dữ liệu từ API và tạo vé
+    Promise.all([
+      axios.get("http://localhost:9999/flights"),
+      axios.get("http://localhost:9999/hotels"),
+      axios.get("http://localhost:9999/cars"),
+    ])
+      .then(([flightsRes, hotelsRes, carsRes]) => {
+        if (cancelled) {
+          return;
+        }
+        // Tạo danh sách vé từ dữ liệu API
+        const all = [
+          ...createInitialTickets(flightsRes.data),
+          ...createInitialHotels(hotelsRes.data),
+          ...createInitialCars(carsRes.data),
+        ];
+        // Thêm vé mới nếu có
+        if (newBooking) {
+          const filtered = all.filter((t) => t.id !== newBooking.id);
+          setTickets([newBooking, ...filtered]);
+          setActiveTab(TICKET_STATUS.PENDING);
+          return;
+        }
+
+        setTickets(all);
+      })
+      .catch((error) => console.log(error));
+
+    // Hủy đặt vé mới nếu có
+    return () => {
+      cancelled = true;
+    };
+    // Cleanup khi component unmount
+  }, [location.key]);
+
+  // Đếm số vé từng tab
   const counts = countTicketsByStatus(tickets);
 
   const sendSignal = (ticketId, signal) => {
@@ -57,6 +100,7 @@ function MyTicketsPage() {
     currentTickets = cancelledTickets;
   }
 
+  // Định dạng giá tiền
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -64,6 +108,7 @@ function MyTicketsPage() {
     }).format(price);
   };
 
+  // Hiển thị vé đang xem
   if (viewingTicket) {
     return (
       <ViewTicketScreen
@@ -73,13 +118,13 @@ function MyTicketsPage() {
       />
     );
   }
-
+  // Hiển thị danh sách vé
   return (
     <div className="my-tickets-page">
       <h1 className="fw-bold mb-4 text-center">
         Vé của tôi
       </h1>
-
+    
       {/* Tabs */}
       <div
         className="d-flex mb-4 p-2 mx-auto"
@@ -89,6 +134,7 @@ function MyTicketsPage() {
           borderRadius: "12px",
         }}
       >
+       
         <Button
           variant={activeTab === TICKET_STATUS.PENDING ? "light" : "link"}
           className="flex-fill text-decoration-none"
@@ -116,6 +162,7 @@ function MyTicketsPage() {
 
       {/* Danh sách vé */}
       {currentTickets.length === 0 ? (
+        // Hiển thị thông báo nếu không có vé
         <div
           className="d-flex justify-content-center align-items-center"
           style={{
@@ -148,23 +195,21 @@ function MyTicketsPage() {
                     objectFit: "cover",
                   }}
                 />
-
                 <Card.Body>
+                  <span className="badge bg-secondary mb-2">
+                    {ticket.type === "flight" ? "✈ Máy bay" : ticket.type === "hotel" ? "🏨 Khách sạn" : "🚗 Ô tô"}
+                  </span>
                   <h5 className="fw-bold text-primary">
-                    {ticket.from} ✈ {ticket.to}
+                    {ticket.title}
                   </h5>
 
-                  <p className="mb-1">
-                    <b>Hãng bay:</b> {ticket.airline}
-                  </p>
+                  {ticket.subtitle && (
+                    <p className="mb-1 text-muted small">{ticket.subtitle}</p>
+                  )}
 
-                  <p className="mb-1">
-                    <b>Ngày bay:</b> {ticket.date}
-                  </p>
-
-                  <p className="mb-1">
-                    <b>Giờ bay:</b> {ticket.time}
-                  </p>
+                  {ticket.detail && (
+                    <p className="mb-1 text-muted small">{ticket.detail}</p>
+                  )}
 
                   <p className="text-danger fw-bold mb-0">
                     {formatPrice(ticket.price)}
@@ -193,7 +238,6 @@ function MyTicketsPage() {
                         </Button>
                       </>
                     )}
-
                     {ticket.status === TICKET_STATUS.PAID && (
                       <Button
                         variant="primary"
@@ -203,7 +247,6 @@ function MyTicketsPage() {
                         Xem vé
                       </Button>
                     )}
-
                     {ticket.status === TICKET_STATUS.CANCELLED && (
                       <>
                         <Button

@@ -18,21 +18,22 @@ function ViewTicketScreen({ ticket, onBack, formatPrice }) {
           <span className="badge bg-success mb-3">Đã thanh toán</span>
 
           <h2 className="fw-bold text-primary mb-3">
-            {ticket.from} ✈ {ticket.to}
+            {ticket.title || `${ticket.from} ✈ ${ticket.to}`}
           </h2>
 
           <p className="mb-2">
             <b>Mã vé:</b> {ticket.id}
           </p>
-          <p className="mb-2">
-            <b>Hãng bay:</b> {ticket.airline}
-          </p>
-          <p className="mb-2">
-            <b>Ngày bay:</b> {ticket.date}
-          </p>
-          <p className="mb-2">
-            <b>Giờ bay:</b> {ticket.time}
-          </p>
+          {ticket.subtitle && (
+            <p className="mb-2">
+              <b>Thông tin:</b> {ticket.subtitle}
+            </p>
+          )}
+          {ticket.detail && (
+            <p className="mb-2">
+              <b>Chi tiết:</b> {ticket.detail}
+            </p>
+          )}
           <p className="text-danger fw-bold fs-5 mb-4">
             {formatPrice(ticket.price)}
           </p>
