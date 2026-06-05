@@ -1,0 +1,36 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #f3f6fb;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 460px;
+  border-radius: 8px;
+  box-shadow: 0 18px 60px rgba(16, 24, 40, 0.12);
+}
+
+.login-title {
+  font-size: 28px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.login-hint {
+  margin-top: -14px;
+  margin-bottom: 18px;
+  color: #667085;
+  font-size: 14px;
+  text-align: center;
+}
+
+.register-hint {
+  color: #667085;
+  font-size: 14px;
+  margin-bottom: 18px;
+  text-align: center;
+}
