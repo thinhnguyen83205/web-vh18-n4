@@ -1,24 +1,58 @@
+import axios from "axios";
+
 export const TICKET_STATUS = {
   PENDING: "pending",
   PAID: "paid",
   CANCELLED: "cancelled",
 };
 
-// Tín hiệu từ nút bấm ==> đổi trạng thái vé
 export const ACTION_SIGNAL = {
   PAY: "pay",
   CANCEL: "cancel",
   DELETE: "delete",
 };
 
-// Trạng thái vé
+export const TYPE_LABELS = {
+  flight: "✈ Máy bay",
+  hotel: "🏨 Khách sạn",
+  car: "🚗 Ô tô",
+  tour: "🎒 Tour",
+};
+
+const TICKETS_STORAGE_KEY = "myTickets";
+
 const STATUS_CYCLE = [
   TICKET_STATUS.PENDING,
   TICKET_STATUS.PAID,
   TICKET_STATUS.CANCELLED,
 ];
 
-// Tạo danh sách vé từ dữ liệu API
+// ĐỌC / GHI danh sách vé trong localStorage
+export function getTickets() {
+  try {
+    const saved = localStorage.getItem(TICKETS_STORAGE_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveTickets(tickets) {
+  localStorage.setItem(TICKETS_STORAGE_KEY, JSON.stringify(tickets));
+}
+
+// THÊM vé mới (đặt từ trang chi tiết)
+export function addTicket(newTicket) {
+  const currentTickets = getTickets();
+  const withoutDuplicate = currentTickets.filter(
+    (ticket) => ticket.id !== newTicket.id,
+  );
+  const updatedTickets = [newTicket, ...withoutDuplicate];
+  saveTickets(updatedTickets);
+  return updatedTickets;
+}
+
+// Tạo vé demo từ API (chỉ dùng lần đầu khi chưa có vé)
 export function createInitialTickets(flights) {
   return flights.map((flight, index) => ({
     id: `flight-${flight.id}`,
@@ -52,37 +86,56 @@ export function createInitialCars(cars) {
     image: car.image,
     title: car.name,
     subtitle: car.location,
-    detail: car.specs ? `${car.specs.seats} chỗ | ${car.specs.fuel} | ${car.specs.transmission}` : "",
+    detail: car.specs
+      ? `${car.specs.seats} chỗ | ${car.specs.fuel} | ${car.specs.transmission}`
+      : "",
     price: car.priceFrom,
     status: STATUS_CYCLE[index % STATUS_CYCLE.length],
   }));
 }
 
-// Key cho vé đang chờ thanh toán
-const PENDING_BOOKING_KEY = "pendingBooking";
-
-// Lưu vé đang chờ thanh toán
-export function savePendingBooking(ticket) {
-  sessionStorage.setItem(PENDING_BOOKING_KEY, JSON.stringify(ticket));
+export function createInitialTours(tours) {
+  return tours.map((tour, index) => ({
+    id: `tour-${tour.id}`,
+    type: "tour",
+    image: tour.image,
+    title: tour.name,
+    subtitle: tour.location,
+    detail: tour.duration ? `Thời lượng: ${tour.duration}` : "",
+    price: tour.priceFrom,
+    status: STATUS_CYCLE[index % STATUS_CYCLE.length],
+  }));
 }
 
-// Lấy vé đang chờ thanh toán
-export function consumePendingBooking() {
-  const raw = sessionStorage.getItem(PENDING_BOOKING_KEY);
-  if (!raw) {
-    return null;
-  }
-  sessionStorage.removeItem(PENDING_BOOKING_KEY);
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return null;
-  }
+export async function loadDemoTicketsFromApi() {
+  const [flightsRes, hotelsRes, carsRes, toursRes] = await Promise.all([
+    axios.get("http://localhost:9999/flights"),
+    axios.get("http://localhost:9999/hotels"),
+    axios.get("http://localhost:9999/cars"),
+    axios.get("http://localhost:9999/tours"),
+  ]);
+
+  return [
+    ...createInitialTickets(flightsRes.data),
+    ...createInitialHotels(hotelsRes.data),
+    ...createInitialCars(carsRes.data),
+    ...createInitialTours(toursRes.data),
+  ];
 }
 
-// Map item to pending ticket
+export async function initTicketsIfEmpty() {
+  const savedTickets = getTickets();
+  if (savedTickets.length > 0) {
+    return savedTickets;
+  }
+
+  const demoTickets = await loadDemoTicketsFromApi();
+  saveTickets(demoTickets);
+  return demoTickets;
+}
+
+// 4. Chuyển item từ trang chi tiết thành 1 vé "chờ thanh toán"
 export function mapItemToPendingTicket(type, item) {
-  // Map flight to pending ticket
   if (type === "flight") {
     return {
       id: `flight-${item.id}`,
@@ -108,7 +161,7 @@ export function mapItemToPendingTicket(type, item) {
       status: TICKET_STATUS.PENDING,
     };
   }
-  
+
   if (type === "car") {
     return {
       id: `car-${item.id}`,
@@ -124,7 +177,6 @@ export function mapItemToPendingTicket(type, item) {
     };
   }
 
-  // Map tour to pending ticket
   return {
     id: `tour-${item.id}`,
     type: "tour",
@@ -137,36 +189,43 @@ export function mapItemToPendingTicket(type, item) {
   };
 }
 
-// Đếm số vé từng tab — gọi lại sau mỗi tín hiệu
+// Lọc và đếm vé theo tab
+export function filterTicketsByStatus(tickets, status) {
+  return tickets.filter((ticket) => ticket.status === status);
+}
+
 export function countTicketsByStatus(tickets) {
   return {
-    pending: tickets.filter((t) => t.status === TICKET_STATUS.PENDING).length,
-    paid: tickets.filter((t) => t.status === TICKET_STATUS.PAID).length,
-    cancelled: tickets.filter((t) => t.status === TICKET_STATUS.CANCELLED).length,
+    pending: filterTicketsByStatus(tickets, TICKET_STATUS.PENDING).length,
+    paid: filterTicketsByStatus(tickets, TICKET_STATUS.PAID).length,
+    cancelled: filterTicketsByStatus(tickets, TICKET_STATUS.CANCELLED).length,
   };
 }
 
-// Nhận tín hiệu → cập nhật vé → tab tự đếm lại khi render
+// Xử lý nút bấm: thanh toán / hủy / xóa
 export function applyActionSignal(tickets, ticketId, signal) {
-  let nextStatus = null;
-
-  if (signal === ACTION_SIGNAL.PAY) {
-    nextStatus = TICKET_STATUS.PAID;
-  }
-
-  if (signal === ACTION_SIGNAL.CANCEL) {
-    nextStatus = TICKET_STATUS.CANCELLED;
-  }
+  let updatedTickets = tickets;
 
   if (signal === ACTION_SIGNAL.DELETE) {
-    return tickets.filter((ticket) => ticket.id !== ticketId);
+    updatedTickets = tickets.filter((ticket) => ticket.id !== ticketId);
+  } else {
+    let nextStatus = null;
+
+    if (signal === ACTION_SIGNAL.PAY) {
+      nextStatus = TICKET_STATUS.PAID;
+    }
+
+    if (signal === ACTION_SIGNAL.CANCEL) {
+      nextStatus = TICKET_STATUS.CANCELLED;
+    }
+
+    if (nextStatus) {
+      updatedTickets = tickets.map((ticket) =>
+        ticket.id === ticketId ? { ...ticket, status: nextStatus } : ticket,
+      );
+    }
   }
 
-  if (!nextStatus) {
-    return tickets;
-  }
-
-  return tickets.map((ticket) =>
-    ticket.id === ticketId ? { ...ticket, status: nextStatus } : ticket,
-  );
+  saveTickets(updatedTickets);
+  return updatedTickets;
 }

@@ -1,8 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Card, Col, Row } from "react-bootstrap";
 import {
+  addTicket,
   mapItemToPendingTicket,
-  savePendingBooking,
 } from "../cart/navigation-tickets/ticketButtonLogic";
 
 // Label cho các loại vé
@@ -48,8 +48,9 @@ function ViewTicketsDetail() {
 
   // Xử lý đặt vé
   const handleBook = () => {
-    savePendingBooking(mapItemToPendingTicket(type, item));
-    navigate("/");
+    const newTicket = mapItemToPendingTicket(type, item);
+    addTicket(newTicket);
+    navigate("/tickets", { state: { justAdded: true } });
   };
 
   // Hiển thị thông tin chi tiết vé
