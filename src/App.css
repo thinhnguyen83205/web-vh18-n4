@@ -1,0 +1,427 @@
+:root {
+  --tg-primary: #0d6efd;
+  --tg-border: #dee2e6;
+  --tg-muted: #6c757d;
+  --tg-surface: #f8f9fa;
+}
+
+.tg-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.tg-layout-main {
+  flex: 1;
+  padding-top: 1rem;
+}
+
+.tg-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 64px;
+  padding: 0 1.5rem;
+  background: #fff;
+  border-bottom: 1px solid var(--tg-border);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 6%);
+}
+
+.tg-logo,
+.tg-nav-link,
+.tg-footer-link,
+.home-page__suggestion-item,
+.home-page__tag {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.tg-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0;
+}
+
+.tg-logo-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--tg-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tg-logo-text {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.tg-logo-text span {
+  color: var(--tg-primary);
+}
+
+.tg-nav-links,
+.tg-footer-links {
+  display: flex;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tg-nav-actions,
+.tg-footer-social {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tg-nav-link {
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.5rem;
+  color: var(--tg-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.tg-nav-link:hover,
+.tg-nav-link.active {
+  color: var(--tg-primary);
+  background: rgb(13 110 253 / 8%);
+}
+
+.tg-nav-link.active {
+  font-weight: 600;
+}
+
+.tg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tg-btn--sm { padding: 0.375rem 0.75rem; font-size: 0.8125rem; }
+.tg-btn--md { padding: 0.5rem 1rem; font-size: 0.875rem; }
+.tg-btn--lg { padding: 0.625rem 1.25rem; font-size: 1rem; }
+.tg-btn--full { width: 100%; }
+.tg-btn--primary { background: var(--tg-primary); color: #fff; }
+.tg-btn--primary:hover { background: #0a58ca; }
+.tg-btn--secondary { background: var(--tg-surface); border: 1px solid var(--tg-border); }
+.tg-btn--outline { color: var(--tg-primary); border: 1px solid var(--tg-primary); }
+.tg-btn--ghost { color: var(--tg-muted); }
+
+.tg-footer {
+  margin-top: 2rem;
+  background: #212529;
+  color: rgb(255 255 255 / 85%);
+}
+
+.tg-footer-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 1.25rem;
+}
+
+.tg-footer-top {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.tg-footer-col-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+
+.tg-footer-link {
+  color: rgb(255 255 255 / 70%);
+  font-size: 0.875rem;
+  padding: 0.25rem 0;
+}
+
+.tg-footer-link:hover {
+  color: #fff;
+}
+
+.tg-footer-social-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgb(255 255 255 / 20%);
+  background: rgb(255 255 255 / 8%);
+  color: #fff;
+  cursor: pointer;
+}
+
+.tg-footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgb(255 255 255 / 12%);
+  font-size: 0.8125rem;
+  color: rgb(255 255 255 / 60%);
+}
+
+.home-page {
+  padding-bottom: 2rem;
+}
+
+.home-page__search-box,
+.home-page__empty {
+  background: var(--tg-surface);
+  border: 1px solid var(--tg-border);
+  border-radius: 0.75rem;
+}
+
+.home-page__search-box {
+  padding: 1.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 7.5%);
+}
+
+.home-page__search {
+  position: relative;
+}
+
+.home-page__search-icon {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.home-page__search-input {
+  padding-left: 2.5rem !important;
+}
+
+.home-page__suggestions {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid var(--tg-border);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 10%);
+  z-index: 20;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.home-page__suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--tg-border);
+  text-align: left;
+}
+
+.home-page__suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.home-page__suggestion-item:hover,
+.home-page__tag:hover {
+  color: var(--tg-primary);
+  background: rgb(13 110 253 / 6%);
+}
+
+.home-page__tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.home-page__tag {
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+  border: 1px solid var(--tg-border);
+  background: #fff;
+  color: var(--tg-muted);
+  font-size: 0.8125rem;
+}
+
+.home-page__tag:hover {
+  border-color: var(--tg-primary);
+}
+
+.home-page__card-img {
+  height: 200px;
+  object-fit: cover;
+}
+
+.home-page__card-img--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--tg-surface);
+  font-size: 3rem;
+}
+
+.home-page__category {
+  border: 1px solid var(--tg-border);
+  box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 7.5%);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.home-page__category:hover {
+  transform: translateY(-2px);
+  border-color: var(--tg-primary);
+  box-shadow: 0 0.5rem 1rem rgb(13 110 253 / 12%);
+}
+
+.home-page__category-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.home-page__category--hotel .home-page__category-icon-wrap { background: rgb(13 110 253 / 12%); }
+.home-page__category--tour .home-page__category-icon-wrap { background: rgb(25 135 84 / 12%); }
+.home-page__category--car .home-page__category-icon-wrap { background: rgb(111 66 193 / 12%); }
+.home-page__category--flight .home-page__category-icon-wrap { background: rgb(220 53 69 / 12%); }
+.home-page__category--ticket .home-page__category-icon-wrap { background: rgb(108 117 125 / 15%); }
+
+.home-page__empty {
+  border-style: dashed;
+}
+
+@media (max-width: 900px) {
+  .tg-nav {
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
+  }
+
+  .tg-nav-links {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+}
+
+.my-tickets-page {
+  width: 100%;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1rem 1.5rem 2rem;
+}
+
+.my-tickets-page__card-col {
+  display: flex;
+  justify-content: center;
+}
+
+.my-tickets-page__card {
+  width: 100%;
+  max-width: 340px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.my-tickets-page__card .card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.my-tickets-page__card-actions {
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.view-ticket-screen {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+.view-ticket-screen__back {
+  padding-left: 0;
+  margin-bottom: 1rem;
+  text-decoration: none;
+}
+
+.view-ticket-screen__card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.view-ticket-screen__image {
+  height: 220px;
+  object-fit: cover;
+}
+
+.view-ticket-screen__qr {
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px dashed #dee2e6;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
