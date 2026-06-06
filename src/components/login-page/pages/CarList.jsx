@@ -25,7 +25,7 @@ function CarList() {
     }).format(price);
   };
 
-  const chonCar = cars.filter((c) =>
+  const chonCar = cars.filter(c =>
     (c.name || "").toLowerCase().includes(search.toLowerCase()),
   );
 
