@@ -7,10 +7,10 @@ import {
 
 // Label cho các loại vé
 const TYPE_LABELS = {
-  flight: "✈ Máy bay",
-  hotel: "🏨 Khách sạn",
-  car: "🚗 Ô tô",
-  tour: "🎒 Tour",
+  flight: "Máy bay",
+  hotel: "Khách sạn",
+  car: "Ô tô",
+  tour: "Tour",
 };
 
 // Label cho các nút đặt vé

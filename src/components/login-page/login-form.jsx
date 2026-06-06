@@ -9,7 +9,7 @@ import {
   Typography,
   message,
 } from "antd";
-import {
+import {  
   LockOutlined,
   MailOutlined,
   PhoneOutlined,
@@ -35,7 +35,7 @@ function LoginForm() {
       return;
     }
 
-    navigate(user.role === "admin" ? "/admin" : "/hotels");
+    navigate(user.role === "admin" ? "/admin" : "/");
   };
 
   const handleRegister = (values) => {
@@ -48,7 +48,7 @@ function LoginForm() {
     }
 
     message.success("Đăng ký tài khoản thành công.");
-    navigate("/hotels");
+    navigate("/");
   };
 
   return (

@@ -13,10 +13,10 @@ export const ACTION_SIGNAL = {
 };
 
 export const TYPE_LABELS = {
-  flight: "✈ Máy bay",
-  hotel: "🏨 Khách sạn",
-  car: "🚗 Ô tô",
-  tour: "🎒 Tour",
+  flight: "Máy bay",
+  hotel: "Khách sạn",
+  car: "Ô tô",
+  tour: "Tour",
 };
 
 const TICKETS_STORAGE_KEY = "myTickets";
@@ -41,7 +41,7 @@ export function saveTickets(tickets) {
   localStorage.setItem(TICKETS_STORAGE_KEY, JSON.stringify(tickets));
 }
 
-// THÊM vé mới (đặt từ trang chi tiết)
+// Thêm vé mới (đặt từ trang chi tiết)
 export function addTicket(newTicket) {
   const currentTickets = getTickets();
   const withoutDuplicate = currentTickets.filter(
@@ -134,7 +134,7 @@ export async function initTicketsIfEmpty() {
   return demoTickets;
 }
 
-// 4. Chuyển item từ trang chi tiết thành 1 vé "chờ thanh toán"
+// Chuyển item từ trang chi tiết thành 1 vé "chờ thanh toán"
 export function mapItemToPendingTicket(type, item) {
   if (type === "flight") {
     return {

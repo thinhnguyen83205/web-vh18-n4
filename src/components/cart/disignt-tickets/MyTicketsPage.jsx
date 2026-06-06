@@ -26,6 +26,7 @@ function formatPrice(price) {
   }).format(price);
 }
 
+
 function MyTicketsPage() {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(TICKET_STATUS.PENDING);
@@ -85,6 +86,7 @@ function MyTicketsPage() {
   const counts = countTicketsByStatus(tickets);
   const currentTickets = filterTicketsByStatus(tickets, activeTab);
 
+  // Xử lý nút bấm: thanh toán / hủy / xóa
   const handleAction = (ticketId, signal) => {
     setTickets((prevTickets) => applyActionSignal(prevTickets, ticketId, signal));
   };
