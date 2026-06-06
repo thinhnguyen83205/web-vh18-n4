@@ -6,6 +6,7 @@ import axios from "axios";
 function TourList() {
   const [tours, setTours] = useState([]);
   const [search, setSearch] = useState("");
+  const [sorts, setSorts] = useState("");
 
   useEffect(() => {
     axios
@@ -28,6 +29,16 @@ function TourList() {
   const chonTour = tours.filter((t) =>
     (t.name || "").toLowerCase().includes(search.toLowerCase()),
   );
+  const sapXepTour =[...chonTour].sort((a, b) => {
+    if (sorts === "price-asc") {
+      return a.priceFrom - b.priceFrom;
+    } else if (sorts === "price-desc") {
+      return b.priceFrom - a.priceFrom;
+    }else if (sorts ==="rating") {
+      return b.rating - a.rating;
+    }
+    return 0;
+  });
 
   return (
     <div className="text-center mt-3 container">
@@ -39,13 +50,21 @@ function TourList() {
             type="search"
             value={search}
             onChange={handleSearch}
-            placeholder="Search by tour name..."
+            placeholder="Tìm kiếm tour..."
           />
+        </Col>
+        <Col md={2}>
+          <Form.Select value={sorts} onChange={(e) => setSorts(e.target.value)}>
+            <option value="">Sắp xếp</option>
+            <option value="price-asc">Giá Tăng dần</option>
+            <option value="price-desc">Giá Giảm dần</option>
+            <option value="rating">Đánh giá</option>
+          </Form.Select>
         </Col>
       </Row>
 
       <Row>
-        {chonTour.map((t) => (
+        {sapXepTour.map((t) => (
           <Col md={4} key={t.id}>
             <Card className="mb-3 p-2">
               {t.image && (
@@ -69,7 +88,7 @@ function TourList() {
                 </p>
 
                 <p className="mb-1">
-                  <b>Rating:</b> ⭐ {t.rating || "N/A"}
+                  <b>Rating:</b> {t.rating || "N/A"}
                 </p>
 
                 <p className="mb-3">

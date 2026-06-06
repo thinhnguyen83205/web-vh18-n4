@@ -6,19 +6,20 @@ import axios from "axios";
 function CarList() {
   const [cars, setCars] = useState([]);
   const [search, setSearch] = useState("");
+  const [sorts, setSorts] = useState("");
 
   useEffect(() => {
     axios
       .get("http://localhost:9999/cars")
-      .then((res) => setCars(res.data))
-      .catch((error) => console.log(error));
+      .then(res => setCars(res.data))
+      .catch(error => console.log(error));
   }, []);
 
-  const handleSearch = (e) => {
+  const handleSearch = e => {
     setSearch(e.target.value);
   };
 
-  const formatPrice = (price) => {
+  const formatPrice = price => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
@@ -28,6 +29,21 @@ function CarList() {
   const chonCar = cars.filter(c =>
     (c.name || "").toLowerCase().includes(search.toLowerCase()),
   );
+  const sapXepCar = [...chonCar].sort((a, b) => {
+    if (sorts === "price-asc") {
+      return a.priceFrom - b.priceFrom;
+    }
+
+    if (sorts === "price-desc") {
+      return b.priceFrom - a.priceFrom;
+    }
+
+    if (sorts === "rating") {
+      return (b.rating || 0) - (a.rating || 0);
+    }
+
+    return 0;
+  });
 
   return (
     <div className="container mt-3">
@@ -42,10 +58,18 @@ function CarList() {
             placeholder="Tìm kiếm tên xe..."
           />
         </Col>
+        <Col md={2}>
+          <Form.Select value={sorts} onChange={e => setSorts(e.target.value)}>
+            <option value="">Sắp xếp</option>
+            <option value="price-asc">Giá tăng dần</option>
+            <option value="price-desc">Giá giảm dần</option>
+            <option value="rating">Đánh giá</option>
+          </Form.Select>
+        </Col>
       </Row>
 
       <Row>
-        {chonCar.map((c) => (
+        {sapXepCar.map(c => (
           <Col md={4} key={c.id} className="d-flex">
             <Card className="mb-4 p-2 w-100 shadow-sm">
               <div style={{ height: "200px", overflow: "hidden" }}>
@@ -63,17 +87,23 @@ function CarList() {
                   </p>
                   {c.specs && (
                     <p className="mb-1 text-muted small">
-                      <b>Thông số:</b> {c.specs.seats} chỗ | {c.specs.fuel} | {c.specs.transmission}
+                      <b>Thông số:</b> {c.specs.seats} chỗ | {c.specs.fuel} |{" "}
+                      {c.specs.transmission}
                     </p>
                   )}
                   <p className="mb-1 text-muted small">
-                    <b>Đánh giá:</b>  {c.rating || "Chưa có"}
+                    <b>Đánh giá:</b> {c.rating || "Chưa có"}
                   </p>
-                  <p className="text-success fw-bold mb-3" style={{ fontSize: "1.1rem" }}>
+                  <p
+                    className="text-success fw-bold mb-3"
+                    style={{ fontSize: "1.1rem" }}
+                  >
                     {formatPrice(c.priceFrom)}
                   </p>
                 </div>
-                <Button variant="primary" className="w-100 mt-auto">Thuê xe ngay</Button>
+                <Button variant="primary" className="w-100 mt-auto">
+                  Thuê xe ngay
+                </Button>
               </Card.Body>
             </Card>
           </Col>

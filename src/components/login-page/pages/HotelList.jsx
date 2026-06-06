@@ -6,6 +6,7 @@ import axios from "axios";
 function HotelList() {
   const [hotels, setHotels] = useState([]);
   const [search, setSearch] = useState("");
+  const [sorts, setSorts] = useState("");
 
   useEffect(() => {
     axios
@@ -25,6 +26,16 @@ function HotelList() {
   const chonHotel = hotels.filter((h) =>
     (h.name || "").toLowerCase().includes(search.toLowerCase()),
   );
+  const sapXepHotel = [...chonHotel].sort((a, b) => {
+    if (sorts === "price-asc") {
+      return a.priceFrom - b.priceFrom;
+    } else if (sorts === "price-desc") {
+      return b.priceFrom - a.priceFrom;
+    } else if (sorts === "rating") {
+      return b.rating - a.rating;
+    }
+    return 0;
+  });
   return (
     <div className="container mt-3">
       <h1 className="text-center mb-4">Danh sách Khách sạn</h1>
@@ -38,10 +49,18 @@ function HotelList() {
             placeholder="Tìm kiếm tên khách sạn..."
           />
         </Col>
+        <Col md={2}>
+          <Form.Select value={sorts} onChange={(e) => setSorts(e.target.value)}>
+            <option value="">Sắp xếp</option>
+            <option value="price-asc">Giá Tăng dần</option>
+            <option value="price-desc">Giá Giảm dần</option>
+            <option value="rating">Đánh giá</option>
+          </Form.Select>
+        </Col>
       </Row>
 
       <Row>
-        {chonHotel.map((h) => (
+        {sapXepHotel.map((h) => (
           <Col md={4} key={h.id} className="d-flex">
             <Card className="mb-4 p-2 w-100 shadow-sm">
               <div style={{ height: "200px", overflow: "hidden" }}>

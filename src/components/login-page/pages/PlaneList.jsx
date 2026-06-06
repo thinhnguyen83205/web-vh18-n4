@@ -6,6 +6,7 @@ import axios from "axios";
 function PlaneList() {
   const [flights, setFlights] = useState([]);
   const [search, setSearch] = useState("");
+  const [sorts, setSorts] = useState("");
 
   useEffect(() => {
     axios
@@ -29,6 +30,15 @@ function PlaneList() {
     (f.toFull || "").toLowerCase().includes(search.toLowerCase()) ||
     (f.airline || "").toLowerCase().includes(search.toLowerCase()),
   );
+  const sapXepFlight = [...chonFlight].sort((a, b) => {
+    if (sorts === "price-asc") {
+      return a.priceFrom - b.priceFrom;
+    } else if (sorts === "price-desc") {
+      return b.priceFrom - a.priceFrom;
+    }
+
+    return 0;
+  });
 
   return (
     <div className="container mt-3">
@@ -40,13 +50,20 @@ function PlaneList() {
             type="search"
             value={search}
             onChange={handleSearch}
-            placeholder="Tìm theo điểm đến hoặc hãng hàng không..."
+            placeholder="Tìm hãng hàng không..."
           />
+        </Col>
+        <Col md={2}>
+          <Form.Select value={sorts} onChange={(e) => setSorts(e.target.value)}>
+            <option value="">Sắp xếp</option>
+            <option value="price-asc">Giá Tăng dần</option>
+            <option value="price-desc">Giá Giảm dần</option>
+          </Form.Select>
         </Col>
       </Row>
 
       <Row>
-        {chonFlight.map((f) => (
+        {sapXepFlight.map((f) => (
           <Col md={4} key={f.id} className="d-flex">
             <Card className="mb-4 p-2 w-100 shadow-sm">
               <div style={{ height: "140px", overflow: "hidden" }}>
